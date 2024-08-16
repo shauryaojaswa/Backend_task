@@ -1,0 +1,35 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Real-time Notifications</title>
+</head>
+<body>
+  <h1>Real-time Notifications</h1>
+  <input type="text" id="message-input" />
+  <button id="send-button">Send</button>
+  <ul id="message-list"></ul>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io('http://localhost:3000');
+
+    // Handle new message event
+    socket.on('new-message', (message) => {
+      console.log(`Received new message: ${message}`);
+      const messageList = document.getElementById('message-list');
+      const messageItem = document.createElement('li');
+      messageItem.textContent = message;
+      messageList.appendChild(messageItem);
+    });
+
+    // Send new message event
+    document.getElementById('send-button').addEventListener('click', () => {
+      const messageInput = document.getElementById('message-input');
+      const message = messageInput.value;
+      socket.emit('new-message', message);
+      messageInput.value = '';
+    });
+  </script>
+</body>
+</html>
